@@ -17,7 +17,7 @@ const TopUp = () => {
 
     const topUp = async () => {
         if (redemptionCode === '') {
-            showInfo('请输入兑换码！')
+            showInfo('点击“获取兑换码”以购买！')
             return;
         }
         setIsSubmitting(true);
@@ -170,7 +170,7 @@ const TopUp = () => {
                 </Layout.Header>
                 <Layout.Content>
                     <Modal
-                        title="确定要充值吗"
+                        title="请确认金额"
                         visible={open}
                         onOk={onlineTopUp}
                         onCancel={handleCancel}
@@ -178,8 +178,8 @@ const TopUp = () => {
                         size={'small'}
                         centered={true}
                     >
-                        <p>充值数量：{topUpCount}$</p>
-                        <p>实付金额：{renderAmount()}</p>
+                        <p>充值额度（单位：美刀）：{topUpCount}$</p>
+                        <p>实付金额（单位：元）：{renderAmount()}</p>
                         <p>是否确认充值？</p>
                     </Modal>
                     <div style={{marginTop: 20, display: 'flex', justifyContent: 'center'}}>
@@ -224,7 +224,7 @@ const TopUp = () => {
                                     <Form.Input
                                         field={'redemptionCount'}
                                         label={'实付金额：' + renderAmount()}
-                                        placeholder='充值数量'
+                                        placeholder='充值额度（单位：美刀）'
                                         name='redemptionCount'
                                         type={'number'}
                                         value={topUpCount}
