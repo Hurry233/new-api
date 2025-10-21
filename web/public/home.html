@@ -33,7 +33,7 @@
       body {
         background: var(--bg);
         color: var(--text-0);
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        font-family: Lato, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
       }
       a { color: inherit; text-decoration: none; }
       .container { width: 100%; min-height: 100%; overflow-x: hidden; }
@@ -41,7 +41,7 @@
       /* Section / Hero */
       .section { border-bottom: 1px solid var(--border); position: relative; }
       .hero { min-height: 620px; display: flex; align-items: center; justify-content: center; padding: 96px 16px 120px; }
-      .center { max-width: 1000px; width: 100%; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+      .center { max-width: 1024px; width: 100%; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
       h1 { margin: 0; font-weight: 800; line-height: 1.12; font-size: clamp(32px, 6vw, 64px); letter-spacing: 0.02em; }
       p.desc { margin: 16px auto 0; max-width: 720px; color: var(--text-1); font-size: clamp(14px, 2.6vw, 18px); }
 
@@ -52,10 +52,7 @@
         -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         animation: sweep-shine 4s linear infinite;
       }
-      @keyframes sweep-shine {
-        0% { background-position: 200% 0; }
-        100% { background-position: 0 0; }
-      }
+      @keyframes sweep-shine { 0% { background-position: 200% 0; } 100% { background-position: 0 0; } }
 
       /* Blurred balls */
       .blur-ball { position: absolute; width: 360px; height: 360px; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
@@ -81,15 +78,17 @@
 
       /* Actions */
       .actions { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
-      .btn { border: 1px solid var(--border); background: var(--fill); color: var(--text-0); padding: 10px 18px; border-radius: 9999px; font-size: 16px; cursor: pointer; }
+      .btn { border: 1px solid var(--border); background: var(--fill); color: var(--text-0); padding: 10px 18px; border-radius: 18px; font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
       .btn:hover { filter: brightness(0.98); }
       .btn.primary { background: var(--primary); color: var(--primary-contrast); border-color: transparent; }
+      .btn svg { width: 16px; height: 16px; }
 
       /* Support vendors */
       .support { margin-top: 64px; }
       .support h3 { margin: 0 0 16px; font-size: clamp(16px, 3vw, 20px); font-weight: 500; color: var(--text-1); }
       .vendors { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; opacity: .95; max-width: 1080px; margin: 0 auto; padding: 0 8px; }
-      .vendor-chip { padding: 8px 12px; border: 1px solid var(--border); color: var(--text-2); border-radius: 12px; font-size: 14px; background: var(--fill); }
+      .vendor { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid var(--border); background: var(--fill); color: var(--text-1); font-weight: 600; font-size: 12px; }
+      .vendor-more { border: 0; background: transparent; color: var(--text-0); font-weight: 800; font-size: clamp(18px, 3.2vw, 28px); }
 
       /* Toast */
       .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: rgba(20,20,20,.9); color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 14px; display: none; z-index: 1000; }
@@ -149,7 +148,7 @@
               <label class="input" aria-label="base-url">
                 <input id="base-url" type="text" readonly value="" />
                 <span class="suffix">
-                  <div class="scrolllist" aria-hidden="true">
+                  <div class="scrolllist" aria-hidden="true" id="endpoint-container" title="Scroll or click to switch">
                     <div class="scrolllist-inner" id="endpoint-list"></div>
                   </div>
                   <button class="copy" id="copy-btn" title="Copy" aria-label="Copy base URL" type="button">
@@ -164,34 +163,45 @@
 
             <!-- Actions -->
             <div class="actions">
-              <a class="btn primary" id="get-key" href="/console">获取密钥</a>
-              <a class="btn hidden" id="doc-btn" target="_blank" rel="noreferrer">文档</a>
-              <a class="btn hidden" id="github-btn" target="_blank" rel="noreferrer">GitHub</a>
+              <a class="btn primary" id="get-key" href="/console">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span id="get-key-text">获取密钥</span>
+              </a>
+              <a class="btn hidden" id="doc-btn" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg>
+                <span>文档</span>
+              </a>
+              <a class="btn hidden" id="github-btn" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A12 12 0 0 0 0 12.8c0 5.4 3.4 10 8.2 11.6.6.1.8-.3.8-.6v-2.2c-3.3.8-4-1.6-4-1.6-.6-1.5-1.4-1.9-1.4-1.9-1.2-.8.1-.8.1-.8 1.3.1 2 1.4 2 1.4 1.2 2 3.2 1.4 4 .9.1-.9.5-1.4.8-1.7-2.7-.3-5.6-1.4-5.6-6.1 0-1.4.5-2.5 1.3-3.4-.1-.3-.6-1.6.1-3.2 0 0 1-.3 3.3 1.3a11 11 0 0 1 6 0C18.7 3.7 19.7 4 19.7 4c.7 1.6.2 2.9.1 3.2.8.9 1.3 2 1.3 3.4 0 4.7-2.9 5.8-5.6 6.1.5.4.9 1.2.9 2.4v3.6c0 .3.2.7.8.6A12.2 12.2 0 0 0 24 12.8 12 12 0 0 0 12 .5Z"/></svg>
+                <span>GitHub</span>
+              </a>
             </div>
 
             <!-- Vendors -->
             <div class="support">
               <h3 id="support-text">支持众多的大模型供应商</h3>
               <div class="vendors" id="vendors">
-                <span class="vendor-chip">OpenAI</span>
-                <span class="vendor-chip">Claude</span>
-                <span class="vendor-chip">Gemini</span>
-                <span class="vendor-chip">Suno</span>
-                <span class="vendor-chip">Qwen</span>
-                <span class="vendor-chip">Grok</span>
-                <span class="vendor-chip">Moonshot</span>
-                <span class="vendor-chip">Minimax</span>
-                <span class="vendor-chip">Wenxin</span>
-                <span class="vendor-chip">Spark</span>
-                <span class="vendor-chip">Qingyan</span>
-                <span class="vendor-chip">Volcengine</span>
-                <span class="vendor-chip">Cohere</span>
-                <span class="vendor-chip">AzureAI</span>
-                <span class="vendor-chip">Hunyuan</span>
-                <span class="vendor-chip">Xinference</span>
-                <span class="vendor-chip">Midjourney</span>
-                <span class="vendor-chip">Zhipu</span>
-                <span class="vendor-chip">30+</span>
+                <div class="vendor" title="Moonshot">MS</div>
+                <div class="vendor" title="OpenAI">OA</div>
+                <div class="vendor" title="XAI">X</div>
+                <div class="vendor" title="Zhipu">ZP</div>
+                <div class="vendor" title="Volcengine">VE</div>
+                <div class="vendor" title="Cohere">CH</div>
+                <div class="vendor" title="Claude">CL</div>
+                <div class="vendor" title="Gemini">GE</div>
+                <div class="vendor" title="Suno">SU</div>
+                <div class="vendor" title="Minimax">MM</div>
+                <div class="vendor" title="Wenxin">WX</div>
+                <div class="vendor" title="Spark">SP</div>
+                <div class="vendor" title="Qingyan">QY</div>
+                <div class="vendor" title="DeepSeek">DS</div>
+                <div class="vendor" title="Qwen">QW</div>
+                <div class="vendor" title="Midjourney">MJ</div>
+                <div class="vendor" title="Grok">GK</div>
+                <div class="vendor" title="AzureAI">AZ</div>
+                <div class="vendor" title="Hunyuan">HY</div>
+                <div class="vendor" title="Xinference">XF</div>
+                <div class="vendor-more">30+</div>
               </div>
             </div>
           </div>
@@ -298,6 +308,7 @@
         const baseUrlInput = $('base-url');
         const copyBtn = $('copy-btn');
         const getKeyBtn = $('get-key');
+        const getKeyText = $('get-key-text');
         const docBtn = $('doc-btn');
         const githubBtn = $('github-btn');
         const toast = $('toast');
@@ -312,6 +323,7 @@
         const tabInAppText = $('tab-inapp-text');
         const tabSystemText = $('tab-system-text');
         const endpointList = $('endpoint-list');
+        const endpointContainer = $('endpoint-container');
 
         // State
         let lang = (localStorage.getItem('i18nextLng') || 'zh').startsWith('zh') ? 'zh' : 'en';
@@ -336,8 +348,8 @@
           $('title-line-1').textContent = dict().title1;
           $('title-line-2').textContent = dict().title2;
           $('desc-text').textContent = dict().desc;
-          getKeyBtn.textContent = dict().getKey;
-          docBtn.textContent = dict().docs;
+          getKeyText.textContent = dict().getKey;
+          docBtn.querySelector('span').textContent = dict().docs;
           $('support-text').textContent = dict().support;
           noticeTitle.textContent = dict().notice;
           tabInAppText.textContent = dict().tabs.inApp;
@@ -361,8 +373,8 @@
           });
         }
 
-        function rotateEndpoint() {
-          endpointIndex = (endpointIndex + 1) % endpoints.length;
+        function rotateEndpoint(step = 1) {
+          endpointIndex = (endpointIndex + step + endpoints.length) % endpoints.length;
           endpointList.style.transform = 'translateY(' + (-endpointIndex * itemHeight) + 'px)';
         }
 
@@ -405,6 +417,13 @@
           }
         });
 
+        // Endpoint wheel & click
+        endpointContainer.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          rotateEndpoint(e.deltaY > 0 ? 1 : -1);
+        }, { passive: false });
+        endpointContainer.addEventListener('click', () => rotateEndpoint(1));
+
         // Notice modal controls
         function openNoticeModal() { noticeModal.style.display = 'flex'; }
         function closeNotice(saveToday) {
@@ -444,7 +463,7 @@
                 // Version / Docs button logic
                 if (data.demo_site_enabled && data.version) {
                   githubBtn.classList.remove('hidden');
-                  githubBtn.textContent = data.version;
+                  githubBtn.querySelector('span').textContent = data.version;
                   githubBtn.href = 'https://github.com/QuantumNous/new-api';
                 } else if (data.docs_link) {
                   docBtn.classList.remove('hidden');
@@ -532,7 +551,7 @@
         setActiveTab('inApp');
 
         // rotate endpoints
-        setInterval(rotateEndpoint, 3000);
+        const endpointTimer = setInterval(() => rotateEndpoint(1), 3000);
 
         // keep item height on resize
         window.addEventListener('resize', () => {
@@ -540,6 +559,9 @@
           if (firstItem) itemHeight = Math.round(firstItem.getBoundingClientRect().height);
           endpointList.style.transform = 'translateY(' + (-endpointIndex * itemHeight) + 'px)';
         });
+
+        // cleanup when unloaded (best effort)
+        window.addEventListener('beforeunload', () => clearInterval(endpointTimer));
       })();
     </script>
   </body>
