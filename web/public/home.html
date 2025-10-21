@@ -43,6 +43,8 @@
       .hero { min-height: 620px; display: flex; align-items: center; justify-content: center; padding: 96px 16px 120px; }
       .center { max-width: 1024px; width: 100%; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
       h1 { margin: 0; font-weight: 800; line-height: 1.12; font-size: clamp(32px, 6vw, 64px); letter-spacing: 0.02em; }
+      body.cn h1 { letter-spacing: 0.04em; }
+      @media (min-width: 768px) { body.cn h1 { letter-spacing: 0.08em; } }
       p.desc { margin: 16px auto 0; max-width: 720px; color: var(--text-1); font-size: clamp(14px, 2.6vw, 18px); }
 
       /* Shine text effect */
@@ -345,6 +347,8 @@
         function dict() { return i18nDict[lang] || i18nDict.zh; }
 
         function i18nRender() {
+          const isZh = lang === 'zh';
+          document.body.classList.toggle('cn', isZh);
           $('title-line-1').textContent = dict().title1;
           $('title-line-2').textContent = dict().title2;
           $('desc-text').textContent = dict().desc;
@@ -356,7 +360,7 @@
           tabSystemText.textContent = dict().tabs.system;
           closeTodayBtn.textContent = dict().closeToday;
           closeNoticeBtn.textContent = dict().closeNotice;
-          document.title = 'New API - ' + (lang === 'zh' ? '首页' : 'Home');
+          document.title = 'New API - ' + (isZh ? '首页' : 'Home');
         }
 
         function showToast(msg) {
