@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/logo.png" />
+    <title>New API - Home</title>
+    <meta name="description" content="New API 统一大模型接口网关首页" />
+
+    <style>
+      :root {
+        --bg: #ffffff;
+        --text-0: #0f172a;
+        --text-1: #475569;
+        --text-2: #64748b;
+        --border: #e5e7eb;
+        --fill: #f8fafc;
+        --primary: #2563eb;
+        --primary-contrast: #ffffff;
+      }
+      html.dark {
+        --bg: #0b1020;
+        --text-0: #e5e7eb;
+        --text-1: #94a3b8;
+        --text-2: #7c8aa5;
+        --border: #1f2937;
+        --fill: #0f152a;
+        --primary: #60a5fa;
+        --primary-contrast: #0b1020;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; height: 100%; }
+      body {
+        background: var(--bg);
+        color: var(--text-0);
+        font-family: Lato, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+      a { color: inherit; text-decoration: none; }
+      .container { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+      /* Section / Hero */
+      .section { border-bottom: 1px solid var(--border); position: relative; }
+      .hero { min-height: 620px; display: flex; align-items: center; justify-content: center; padding: 96px 16px 120px; }
+      .center { max-width: 1024px; width: 100%; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+      h1 { margin: 0; font-weight: 800; line-height: 1.12; font-size: clamp(32px, 6vw, 64px); letter-spacing: 0.02em; }
+      body.cn h1 { letter-spacing: 0.04em; }
+      @media (min-width: 768px) { body.cn h1 { letter-spacing: 0.08em; } }
+      p.desc { margin: 16px auto 0; max-width: 720px; color: var(--text-1); font-size: clamp(14px, 2.6vw, 18px); }
+
+      /* Shine text effect */
+      .shine-text {
+        background: linear-gradient(90deg, currentColor 0%, currentColor 40%, rgba(250, 204, 21, 0.9) 50%, currentColor 60%, currentColor 100%);
+        background-size: 200% 100%;
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        animation: sweep-shine 4s linear infinite;
+      }
+      @keyframes sweep-shine { 0% { background-position: 200% 0; } 100% { background-position: 0 0; } }
+
+      /* Blurred balls */
+      .blur-ball { position: absolute; width: 360px; height: 360px; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+      .blur-ball-indigo { background: #6366f1; top: 40px; left: 50%; transform: translateX(-50%); opacity: .25; }
+      .blur-ball-teal   { background: #14b8a6; top: 200px; left: 30%; opacity: .2; }
+      html.dark .blur-ball-indigo { opacity: .5; }
+      html.dark .blur-ball-teal { opacity: .4; }
+
+      /* Input row */
+      .input-row { max-width: 640px; margin: 20px auto 0; display: flex; gap: 10px; align-items: stretch; padding: 0 6px; }
+      .input { flex: 1; display: flex; border: 1px solid var(--border); border-radius: 9999px; padding: 6px 10px; align-items: center; background: transparent; }
+      .input input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-0); font-size: 16px; padding: 10px; min-width: 0; }
+      .suffix { display: flex; align-items: center; gap: 10px; padding-left: 8px; }
+      .copy { width: 40px; height: 40px; border-radius: 9999px; border: 1px solid var(--border); background: var(--fill); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+      .copy:hover { filter: brightness(0.98); }
+      .copy svg { width: 18px; height: 18px; }
+
+      /* ScrollList mimic */
+      .scrolllist { height: 32px; overflow: hidden; display: flex; align-items: center; }
+      .scrolllist-inner { transition: transform 420ms ease; will-change: transform; }
+      .scrolllist-item { height: 32px; display: flex; align-items: center; padding: 0 2px; }
+      .endpoint { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 14px; opacity: .9; white-space: nowrap; }
+
+      /* Actions */
+      .actions { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+      .btn { border: 1px solid var(--border); background: var(--fill); color: var(--text-0); padding: 10px 18px; border-radius: 18px; font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+      .btn:hover { filter: brightness(0.98); }
+      .btn.primary { background: var(--primary); color: var(--primary-contrast); border-color: transparent; }
+      .btn svg { width: 16px; height: 16px; }
+
+      /* Support vendors */
+      .support { margin-top: 64px; }
+      .support h3 { margin: 0 0 16px; font-size: clamp(16px, 3vw, 20px); font-weight: 500; color: var(--text-1); }
+      .vendors { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; opacity: .95; max-width: 1080px; margin: 0 auto; padding: 0 8px; }
+      .vendor { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid var(--border); background: var(--fill); color: var(--text-1); font-weight: 600; font-size: 12px; }
+      .vendor-more { border: 0; background: transparent; color: var(--text-0); font-weight: 800; font-size: clamp(18px, 3.2vw, 28px); }
+
+      /* Toast */
+      .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: rgba(20,20,20,.9); color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 14px; display: none; z-index: 1000; }
+      html.dark .toast { background: rgba(250,250,250,.95); color: #111827; }
+
+      /* Modal */
+      .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 999; }
+      .modal { width: min(980px, 96%); max-height: 80vh; overflow: hidden; background: var(--bg); color: var(--text-0); border-radius: 14px; border: 1px solid var(--border); display: flex; flex-direction: column; }
+      .modal header { padding: 10px 14px; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .modal .body { padding: 0; }
+      .modal footer { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 14px; border-top: 1px solid var(--border); }
+      .hidden { display: none !important; }
+
+      /* Tabs */
+      .tabs { display: inline-flex; gap: 6px; }
+      .tab { border: 1px solid var(--border); background: var(--fill); color: var(--text-0); padding: 8px 10px; border-radius: 10px; font-size: 14px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+      .tab.active { background: var(--primary); color: var(--primary-contrast); border-color: transparent; }
+      .tab svg { width: 14px; height: 14px; }
+
+      /* Notice content scroll */
+      .notice-scroll { padding: 16px; max-height: 55vh; overflow: auto; }
+
+      /* Timeline */
+      .timeline { padding: 16px; max-height: 55vh; overflow: auto; }
+      .timeline-item { position: relative; padding-left: 24px; margin: 14px 0; }
+      .timeline-item::before { content: ""; position: absolute; left: 8px; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+      .timeline-time { font-size: 12px; color: var(--text-2); margin-bottom: 6px; }
+      .timeline-content { font-size: 14px; }
+      .timeline-extra { font-size: 12px; color: var(--text-2); margin-top: 6px; }
+
+      /* Responsive */
+      @media (max-width: 767px) {
+        .hero { padding: 84px 12px 96px; min-height: 560px; }
+        .input-row { margin-top: 16px; }
+        .copy { width: 36px; height: 36px; }
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="section">
+        <div class="blur-ball blur-ball-indigo"></div>
+        <div class="blur-ball blur-ball-teal"></div>
+        <div class="hero">
+          <div class="center">
+            <h1>
+              <span id="title-line-1">统一的</span><br />
+              <span class="shine-text" id="title-line-2">大模型接口网关</span>
+            </h1>
+
+            <p class="desc" id="desc-text">更好的价格，更好的稳定性，只需要将模型基址替换为：</p>
+
+            <!-- Base URL + Endpoints Scroll + Copy -->
+            <div class="input-row">
+              <label class="input" aria-label="base-url">
+                <input id="base-url" type="text" readonly value="" />
+                <span class="suffix">
+                  <div class="scrolllist" aria-hidden="true" id="endpoint-container" title="Scroll or click to switch">
+                    <div class="scrolllist-inner" id="endpoint-list"></div>
+                  </div>
+                  <button class="copy" id="copy-btn" title="Copy" aria-label="Copy base URL" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
+                </span>
+              </label>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+              <a class="btn primary" id="get-key" href="/console">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span id="get-key-text">获取密钥</span>
+              </a>
+              <a class="btn hidden" id="doc-btn" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path></svg>
+                <span>文档</span>
+              </a>
+              <a class="btn hidden" id="github-btn" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A12 12 0 0 0 0 12.8c0 5.4 3.4 10 8.2 11.6.6.1.8-.3.8-.6v-2.2c-3.3.8-4-1.6-4-1.6-.6-1.5-1.4-1.9-1.4-1.9-1.2-.8.1-.8.1-.8 1.3.1 2 1.4 2 1.4 1.2 2 3.2 1.4 4 .9.1-.9.5-1.4.8-1.7-2.7-.3-5.6-1.4-5.6-6.1 0-1.4.5-2.5 1.3-3.4-.1-.3-.6-1.6.1-3.2 0 0 1-.3 3.3 1.3a11 11 0 0 1 6 0C18.7 3.7 19.7 4 19.7 4c.7 1.6.2 2.9.1 3.2.8.9 1.3 2 1.3 3.4 0 4.7-2.9 5.8-5.6 6.1.5.4.9 1.2.9 2.4v3.6c0 .3.2.7.8.6A12.2 12.2 0 0 0 24 12.8 12 12 0 0 0 12 .5Z"/></svg>
+                <span>GitHub</span>
+              </a>
+            </div>
+
+            <!-- Vendors -->
+            <div class="support">
+              <h3 id="support-text">支持众多的大模型供应商</h3>
+              <div class="vendors" id="vendors">
+                <div class="vendor" title="Moonshot">MS</div>
+                <div class="vendor" title="OpenAI">OA</div>
+                <div class="vendor" title="XAI">X</div>
+                <div class="vendor" title="Zhipu">ZP</div>
+                <div class="vendor" title="Volcengine">VE</div>
+                <div class="vendor" title="Cohere">CH</div>
+                <div class="vendor" title="Claude">CL</div>
+                <div class="vendor" title="Gemini">GE</div>
+                <div class="vendor" title="Suno">SU</div>
+                <div class="vendor" title="Minimax">MM</div>
+                <div class="vendor" title="Wenxin">WX</div>
+                <div class="vendor" title="Spark">SP</div>
+                <div class="vendor" title="Qingyan">QY</div>
+                <div class="vendor" title="DeepSeek">DS</div>
+                <div class="vendor" title="Qwen">QW</div>
+                <div class="vendor" title="Midjourney">MJ</div>
+                <div class="vendor" title="Grok">GK</div>
+                <div class="vendor" title="AzureAI">AZ</div>
+                <div class="vendor" title="Hunyuan">HY</div>
+                <div class="vendor" title="Xinference">XF</div>
+                <div class="vendor-more">30+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Notice Modal -->
+    <div class="modal-backdrop" id="notice-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="notice-title">
+        <header>
+          <div id="notice-title">系统公告</div>
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-key="inApp" id="tab-inapp" role="tab" aria-selected="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 1 0 8"></path><path d="M6 8a6 6 0 0 0 0 8"></path><path d="M2 12h20"></path></svg>
+              <span id="tab-inapp-text">通知</span>
+            </button>
+            <button class="tab" data-key="system" id="tab-system" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h-1a1 1 0 0 0-1 1v3H5l5-5Z"></path><path d="m14 12-4 4h6l4-4h-6Z"></path></svg>
+              <span id="tab-system-text">系统公告</span>
+            </button>
+          </div>
+        </header>
+        <div class="body">
+          <div class="notice-scroll" id="notice-content" role="tabpanel"></div>
+          <div class="timeline hidden" id="announcement-timeline" role="tabpanel"></div>
+        </div>
+        <footer>
+          <button class="btn" id="close-today">今日关闭</button>
+          <button class="btn primary" id="close-notice">关闭公告</button>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // i18n dictionary
+        const i18nDict = {
+          zh: {
+            title1: '统一的',
+            title2: '大模型接口网关',
+            desc: '更好的价格，更好的稳定性，只需要将模型基址替换为：',
+            getKey: '获取密钥',
+            docs: '文档',
+            github: 'GitHub',
+            copied: '已复制到剪切板',
+            support: '支持众多的大模型供应商',
+            notice: '系统公告',
+            tabs: { inApp: '通知', system: '系统公告' },
+            closeToday: '今日关闭',
+            closeNotice: '关闭公告',
+            copy: '复制',
+            emptyNotice: '暂无公告',
+            emptySystem: '暂无系统公告',
+            justNow: '刚刚',
+            minutesAgo: (m) => m + ' 分钟前',
+            hoursAgo: (h) => h + ' 小时前',
+            daysAgo: (d) => d + ' 天前',
+          },
+          en: {
+            title1: 'The Unified',
+            title2: 'LLMs API Gateway',
+            desc: 'Better price, better stability. Just replace your base URL with:',
+            getKey: 'Get API Key',
+            docs: 'Docs',
+            github: 'GitHub',
+            copied: 'Copied to clipboard',
+            support: 'Supports many AI model providers',
+            notice: 'Announcements',
+            tabs: { inApp: 'Notifications', system: 'System' },
+            closeToday: 'Close today',
+            closeNotice: 'Close',
+            copy: 'Copy',
+            emptyNotice: 'No announcements',
+            emptySystem: 'No system announcements',
+            justNow: 'Just now',
+            minutesAgo: (m) => m + ' minutes ago',
+            hoursAgo: (h) => h + ' hours ago',
+            daysAgo: (d) => d + ' days ago',
+          },
+        };
+
+        // Endpoints
+        const endpoints = [
+          '/v1/chat/completions',
+          '/v1/responses',
+          '/v1/messages',
+          '/v1beta/models',
+          '/v1/embeddings',
+          '/v1/rerank',
+          '/v1/images/generations',
+          '/v1/images/edits',
+          '/v1/images/variations',
+          '/v1/audio/speech',
+          '/v1/audio/transcriptions',
+          '/v1/audio/translations',
+        ];
+
+        // Elements
+        const $ = (id) => document.getElementById(id);
+        const baseUrlInput = $('base-url');
+        const copyBtn = $('copy-btn');
+        const getKeyBtn = $('get-key');
+        const getKeyText = $('get-key-text');
+        const docBtn = $('doc-btn');
+        const githubBtn = $('github-btn');
+        const toast = $('toast');
+        const noticeModal = $('notice-modal');
+        const noticeContent = $('notice-content');
+        const timeline = $('announcement-timeline');
+        const closeTodayBtn = $('close-today');
+        const closeNoticeBtn = $('close-notice');
+        const noticeTitle = $('notice-title');
+        const tabInApp = $('tab-inapp');
+        const tabSystem = $('tab-system');
+        const tabInAppText = $('tab-inapp-text');
+        const tabSystemText = $('tab-system-text');
+        const endpointList = $('endpoint-list');
+        const endpointContainer = $('endpoint-container');
+
+        // State
+        let lang = (localStorage.getItem('i18nextLng') || 'zh').startsWith('zh') ? 'zh' : 'en';
+        let themeMode = (localStorage.getItem('theme-mode') || 'auto');
+        let endpointIndex = 0;
+        let serverAddress = window.location.origin;
+        let announcements = [];
+        let activeTab = 'inApp';
+        let itemHeight = 32; // default; measured after render
+
+        // Helpers
+        function applyTheme(mode) {
+          const actual = mode === 'auto'
+            ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : mode;
+          document.documentElement.classList.toggle('dark', actual === 'dark');
+        }
+
+        function dict() { return i18nDict[lang] || i18nDict.zh; }
+
+        function i18nRender() {
+          const isZh = lang === 'zh';
+          document.body.classList.toggle('cn', isZh);
+          $('title-line-1').textContent = dict().title1;
+          $('title-line-2').textContent = dict().title2;
+          $('desc-text').textContent = dict().desc;
+          getKeyText.textContent = dict().getKey;
+          docBtn.querySelector('span').textContent = dict().docs;
+          $('support-text').textContent = dict().support;
+          noticeTitle.textContent = dict().notice;
+          tabInAppText.textContent = dict().tabs.inApp;
+          tabSystemText.textContent = dict().tabs.system;
+          closeTodayBtn.textContent = dict().closeToday;
+          closeNoticeBtn.textContent = dict().closeNotice;
+          document.title = 'New API - ' + (isZh ? '首页' : 'Home');
+        }
+
+        function showToast(msg) {
+          toast.textContent = msg;
+          toast.style.display = 'block';
+          setTimeout(() => (toast.style.display = 'none'), 1600);
+        }
+
+        function renderEndpoints() {
+          endpointList.innerHTML = endpoints.map(e => '<div class="scrolllist-item"><span class="endpoint">' + e + '</span></div>').join('');
+          requestAnimationFrame(() => {
+            const firstItem = endpointList.querySelector('.scrolllist-item');
+            if (firstItem) itemHeight = Math.round(firstItem.getBoundingClientRect().height);
+          });
+        }
+
+        function rotateEndpoint(step = 1) {
+          endpointIndex = (endpointIndex + step + endpoints.length) % endpoints.length;
+          endpointList.style.transform = 'translateY(' + (-endpointIndex * itemHeight) + 'px)';
+        }
+
+        function setServerAddress(value) {
+          serverAddress = value || window.location.origin;
+          baseUrlInput.value = serverAddress;
+        }
+
+        function relativeTime(publishDate) {
+          if (!publishDate) return '';
+          const now = new Date();
+          const date = new Date(publishDate);
+          if (isNaN(date.getTime())) return String(publishDate);
+          const diff = (now - date) / 1000; // seconds
+          if (diff < 60) return dict().justNow;
+          if (diff < 3600) return dict().minutesAgo(Math.floor(diff / 60));
+          if (diff < 86400) return dict().hoursAgo(Math.floor(diff / 3600));
+          return dict().daysAgo(Math.floor(diff / 86400));
+        }
+
+        // Copy handler
+        copyBtn.addEventListener('click', async function () {
+          try {
+            await navigator.clipboard.writeText(serverAddress);
+            showToast(dict().copied);
+          } catch (e) {
+            try {
+              const ta = document.createElement('textarea');
+              ta.value = serverAddress;
+              ta.setAttribute('readonly', '');
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              ta.style.top = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              document.body.removeChild(ta);
+              showToast(dict().copied);
+            } catch (err) { console.error(err); }
+          }
+        });
+
+        // Endpoint wheel & click
+        endpointContainer.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          rotateEndpoint(e.deltaY > 0 ? 1 : -1);
+        }, { passive: false });
+        endpointContainer.addEventListener('click', () => rotateEndpoint(1));
+
+        // Notice modal controls
+        function openNoticeModal() { noticeModal.style.display = 'flex'; }
+        function closeNotice(saveToday) {
+          if (saveToday) localStorage.setItem('notice_close_date', new Date().toDateString());
+          noticeModal.style.display = 'none';
+        }
+        closeTodayBtn.addEventListener('click', () => closeNotice(true));
+        closeNoticeBtn.addEventListener('click', () => closeNotice(false));
+
+        function setActiveTab(key) {
+          activeTab = key;
+          if (key === 'inApp') {
+            tabInApp.classList.add('active');
+            tabSystem.classList.remove('active');
+            noticeContent.classList.remove('hidden');
+            timeline.classList.add('hidden');
+          } else {
+            tabSystem.classList.add('active');
+            tabInApp.classList.remove('active');
+            timeline.classList.remove('hidden');
+            noticeContent.classList.add('hidden');
+          }
+        }
+        tabInApp.addEventListener('click', () => setActiveTab('inApp'));
+        tabSystem.addEventListener('click', () => setActiveTab('system'));
+
+        // Data loaders
+        function initStatus() {
+          return fetch('/api/status', { cache: 'no-store' })
+            .then((r) => r.json())
+            .then((res) => {
+              if (res && res.success) {
+                const data = res.data || {};
+                const addr = data.server_address || window.location.origin;
+                setServerAddress(addr);
+
+                // Version / Docs button logic
+                if (data.demo_site_enabled && data.version) {
+                  githubBtn.classList.remove('hidden');
+                  githubBtn.querySelector('span').textContent = data.version;
+                  githubBtn.href = 'https://github.com/QuantumNous/new-api';
+                } else if (data.docs_link) {
+                  docBtn.classList.remove('hidden');
+                  docBtn.href = data.docs_link;
+                }
+
+                // Announcements for system tab
+                announcements = Array.isArray(data.announcements) ? data.announcements.slice(0, 20) : [];
+                renderAnnouncements();
+              } else {
+                setServerAddress(window.location.origin);
+              }
+            })
+            .catch(() => setServerAddress(window.location.origin));
+        }
+
+        function initNotice() {
+          const lastCloseDate = localStorage.getItem('notice_close_date');
+          const today = new Date().toDateString();
+          if (lastCloseDate === today) return;
+
+          fetch('/api/notice', { cache: 'no-store' })
+            .then((r) => r.json())
+            .then((res) => {
+              if (res && res.success) {
+                const data = res.data;
+                if (data && String(data).trim() !== '') {
+                  const html = (window.marked ? window.marked.parse(data) : data);
+                  noticeContent.innerHTML = html;
+                  setActiveTab('inApp');
+                  openNoticeModal();
+                } else {
+                  noticeContent.innerHTML = '<div style="padding:16px; color: var(--text-2);">' + dict().emptyNotice + '</div>';
+                }
+              }
+            })
+            .catch(() => {});
+        }
+
+        function renderAnnouncements() {
+          if (!announcements || announcements.length === 0) {
+            timeline.innerHTML = '<div style="color: var(--text-2);">' + dict().emptySystem + '</div>';
+            return;
+          }
+          timeline.innerHTML = announcements.map((item) => {
+            const pub = item && item.publishDate ? new Date(item.publishDate) : null;
+            const timeAbs = pub && !isNaN(pub.getTime())
+              ? pub.getFullYear() + '-' + String(pub.getMonth()+1).padStart(2,'0') + '-' + String(pub.getDate()).padStart(2,'0') + ' ' + String(pub.getHours()).padStart(2,'0') + ':' + String(pub.getMinutes()).padStart(2,'0')
+              : (item && item.publishDate) || '';
+            const rel = relativeTime(item && item.publishDate);
+            const contentHtml = (window.marked ? window.marked.parse(item && item.content || '') : (item && item.content || ''));
+            const extraHtml = item && item.extra ? (window.marked ? window.marked.parse(item.extra) : item.extra) : '';
+            return (
+              '<div class="timeline-item">' +
+                '<div class="timeline-time">' + (rel ? rel + ' ' : '') + timeAbs + '</div>' +
+                '<div class="timeline-content">' + contentHtml + '</div>' +
+                (extraHtml ? '<div class="timeline-extra">' + extraHtml + '</div>' : '') +
+              '</div>'
+            );
+          }).join('');
+        }
+
+        // Messages from parent (theme, lang, serverAddress)
+        window.addEventListener('message', (event) => {
+          const data = event.data || {};
+          if (data.themeMode) {
+            themeMode = data.themeMode;
+            applyTheme(themeMode);
+          }
+          if (data.lang) {
+            lang = (String(data.lang).startsWith('zh') ? 'zh' : 'en');
+            i18nRender();
+          }
+          if (data.serverAddress) {
+            setServerAddress(data.serverAddress);
+          }
+        });
+
+        // Init
+        applyTheme(themeMode);
+        i18nRender();
+        setServerAddress(window.location.origin);
+        renderEndpoints();
+        initStatus().then(() => initNotice());
+        setActiveTab('inApp');
+
+        // rotate endpoints
+        const endpointTimer = setInterval(() => rotateEndpoint(1), 3000);
+
+        // keep item height on resize
+        window.addEventListener('resize', () => {
+          const firstItem = endpointList.querySelector('.scrolllist-item');
+          if (firstItem) itemHeight = Math.round(firstItem.getBoundingClientRect().height);
+          endpointList.style.transform = 'translateY(' + (-endpointIndex * itemHeight) + 'px)';
+        });
+
+        // cleanup when unloaded (best effort)
+        window.addEventListener('beforeunload', () => clearInterval(endpointTimer));
+      })();
+    </script>
+  </body>
+</html>
