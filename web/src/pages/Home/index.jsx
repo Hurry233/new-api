@@ -93,13 +93,14 @@ const Home = () => {
       setHomePageContent(content);
       localStorage.setItem('home_page_content', content);
 
-      // 如果内容是 URL，则发送主题模式
+      // 如果内容是 URL，则发送主题模式、语言和服务器地址
       if (data.startsWith('https://')) {
         const iframe = document.querySelector('iframe');
         if (iframe) {
           iframe.onload = () => {
             iframe.contentWindow.postMessage({ themeMode: actualTheme }, '*');
             iframe.contentWindow.postMessage({ lang: i18n.language }, '*');
+            iframe.contentWindow.postMessage({ serverAddress }, '*');
           };
         }
       }

@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/logo.png" />
+    <title>New API - Home</title>
+    <meta name="description" content="New API 统一大模型接口网关首页" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --text-0: #0f172a;
+        --text-1: #475569;
+        --border: #e5e7eb;
+        --primary: #2563eb;
+        --primary-contrast: #ffffff;
+      }
+      html.dark {
+        --bg: #0b1020;
+        --text-0: #e5e7eb;
+        --text-1: #94a3b8;
+        --border: #1f2937;
+        --primary: #60a5fa;
+        --primary-contrast: #0b1020;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0; height: 100%;
+        background: var(--bg); color: var(--text-0);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+      a { color: inherit; text-decoration: none; }
+      .container { width: 100%; min-height: 100%; overflow-x: hidden; }
+      .section { border-bottom: 1px solid var(--border); position: relative; }
+      .hero { min-height: 560px; display: flex; align-items: center; justify-content: center; padding: 96px 16px 120px; }
+      .center { max-width: 960px; width: 100%; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+      h1 { margin: 0; font-weight: 800; line-height: 1.15; font-size: clamp(32px, 6vw, 64px); letter-spacing: 0.02em; }
+      p.desc { margin: 16px auto 0; max-width: 720px; color: var(--text-1); font-size: clamp(14px, 2.6vw, 18px); }
+
+      .actions { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+      .btn { border: 1px solid var(--border); background: transparent; color: var(--text-0); padding: 10px 18px; border-radius: 14px; font-size: 16px; cursor: pointer; }
+      .btn.primary { background: var(--primary); color: var(--primary-contrast); border-color: transparent; }
+
+      .input-row { max-width: 560px; margin: 18px auto 0; display: flex; gap: 8px; align-items: stretch; }
+      .input { flex: 1; display: flex; border: 1px solid var(--border); border-radius: 9999px; padding: 8px 12px; align-items: center; background: transparent; }
+      .input input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-0); font-size: 15px; padding: 6px; min-width: 0; }
+      .input .suffix { display: flex; align-items: center; gap: 12px; padding-left: 8px; }
+      .endpoint { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 14px; opacity: .85; white-space: nowrap; }
+      .copy { border: 1px solid var(--border); background: transparent; color: var(--text-0); padding: 8px 12px; border-radius: 9999px; cursor: pointer; }
+
+      .support { margin-top: 64px; }
+      .support h3 { margin: 0 0 16px; font-size: clamp(16px, 3vw, 20px); font-weight: 500; color: var(--text-1); }
+      .vendors { display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap; opacity: .9; }
+      .vendors .more { font-weight: 800; font-size: clamp(18px, 3.2vw, 28px); }
+
+      .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: rgba(20,20,20,.9); color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 14px; display: none; z-index: 1000; }
+      html.dark .toast { background: rgba(250,250,250,.95); color: #111827; }
+
+      /* Shine text effect */
+      .shine-text {
+        background: linear-gradient(90deg, currentColor 0%, currentColor 40%, rgba(250, 204, 21, 0.9) 50%, currentColor 60%, currentColor 100%);
+        background-size: 200% 100%;
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        animation: sweep-shine 4s linear infinite;
+      }
+      @keyframes sweep-shine {
+        0% { background-position: 200% 0; }
+        100% { background-position: 0 0; }
+      }
+
+      /* Blurred balls */
+      .blur-ball { position: absolute; width: 360px; height: 360px; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+      .blur-ball-indigo { background: #6366f1; top: 40px; left: 50%; transform: translateX(-50%); opacity: .25; }
+      .blur-ball-teal   { background: #14b8a6; top: 200px; left: 30%; opacity: .2; }
+      html.dark .blur-ball-indigo { opacity: .5; }
+      html.dark .blur-ball-teal { opacity: .4; }
+
+      /* Modal */
+      .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 999; }
+      .modal { width: min(860px, 96%); max-height: 80vh; overflow: auto; background: var(--bg); color: var(--text-0); border-radius: 14px; border: 1px solid var(--border); }
+      .modal header { padding: 14px 16px; border-bottom: 1px solid var(--border); font-weight: 600; }
+      .modal .body { padding: 16px; }
+      .modal footer { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 16px; border-top: 1px solid var(--border); }
+
+      .hidden { display: none !important; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="section">
+        <div class="blur-ball blur-ball-indigo"></div>
+        <div class="blur-ball blur-ball-teal"></div>
+        <div class="hero">
+          <div class="center">
+            <h1 id="hero-title">
+              <span id="title-line-1">统一的</span><br />
+              <span class="shine-text" id="title-line-2">大模型接口网关</span>
+            </h1>
+            <p class="desc" id="desc-text">更好的价格，更好的稳定性，只需要将模型基址替换为：</p>
+
+            <div class="input-row">
+              <label class="input" aria-label="base-url">
+                <input id="base-url" type="text" readonly value="" />
+                <span class="suffix">
+                  <span class="endpoint" id="endpoint">/v1/chat/completions</span>
+                  <button class="copy" id="copy-btn" title="Copy">复制</button>
+                </span>
+              </label>
+            </div>
+
+            <div class="actions">
+              <a class="btn primary" id="get-key" href="/console">获取密钥</a>
+              <a class="btn hidden" id="doc-btn" target="_blank" rel="noreferrer">文档</a>
+              <a class="btn hidden" id="github-btn" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+
+            <div class="support">
+              <h3 id="support-text">支持众多的大模型供应商</h3>
+              <div class="vendors">
+                <div class="more">30+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-backdrop" id="notice-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="notice-title">
+        <header id="notice-title">系统公告</header>
+        <div class="body">
+          <div id="notice-content">加载中...</div>
+        </div>
+        <footer>
+          <button class="btn" id="close-today">今日关闭</button>
+          <button class="btn primary" id="close-notice">关闭公告</button>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const t = {
+          zh: {
+            title1: '统一的',
+            title2: '大模型接口网关',
+            desc: '更好的价格，更好的稳定性，只需要将模型基址替换为：',
+            getKey: '获取密钥',
+            docs: '文档',
+            copied: '已复制到剪切板',
+            support: '支持众多的大模型供应商',
+            notice: '系统公告',
+            closeToday: '今日关闭',
+            closeNotice: '关闭公告',
+            copy: '复制',
+          },
+          en: {
+            title1: 'The Unified',
+            title2: 'LLMs API Gateway',
+            desc: 'Better price, better stability. Just replace your base URL with:',
+            getKey: 'Get API Key',
+            docs: 'Docs',
+            copied: 'Copied to clipboard',
+            support: 'Supports many AI model providers',
+            notice: 'Announcements',
+            closeToday: 'Close today',
+            closeNotice: 'Close',
+            copy: 'Copy',
+          },
+        };
+
+        const endpoints = [
+          '/v1/chat/completions',
+          '/v1/responses',
+          '/v1/messages',
+          '/v1beta/models',
+          '/v1/embeddings',
+          '/v1/rerank',
+          '/v1/images/generations',
+          '/v1/images/edits',
+          '/v1/images/variations',
+          '/v1/audio/speech',
+          '/v1/audio/transcriptions',
+          '/v1/audio/translations',
+        ];
+
+        const $ = (id) => document.getElementById(id);
+        const baseUrlInput = $('base-url');
+        const endpointSpan = $('endpoint');
+        const copyBtn = $('copy-btn');
+        const getKeyBtn = $('get-key');
+        const docBtn = $('doc-btn');
+        const githubBtn = $('github-btn');
+        const toast = $('toast');
+        const noticeModal = $('notice-modal');
+        const noticeContent = $('notice-content');
+        const closeTodayBtn = $('close-today');
+        const closeNoticeBtn = $('close-notice');
+
+        let lang = (localStorage.getItem('i18nextLng') || 'zh').startsWith('zh') ? 'zh' : 'en';
+        let themeMode = (localStorage.getItem('theme-mode') || 'auto');
+        let endpointIndex = 0;
+        let serverAddress = window.location.origin;
+
+        function applyTheme(mode) {
+          const actual = mode === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
+          document.documentElement.classList.toggle('dark', actual === 'dark');
+        }
+
+        function i18nRender() {
+          const dict = t[lang] || t.zh;
+          $('title-line-1').textContent = dict.title1;
+          $('title-line-2').textContent = dict.title2;
+          $('desc-text').textContent = dict.desc;
+          getKeyBtn.textContent = dict.getKey;
+          docBtn.textContent = dict.docs;
+          copyBtn.textContent = dict.copy;
+          $('support-text').textContent = dict.support;
+          $('notice-title').textContent = dict.notice;
+          closeTodayBtn.textContent = dict.closeToday;
+          closeNoticeBtn.textContent = dict.closeNotice;
+          document.title = 'New API - ' + (lang === 'zh' ? '首页' : 'Home');
+        }
+
+        function showToast(msg) {
+          toast.textContent = msg;
+          toast.style.display = 'block';
+          setTimeout(() => (toast.style.display = 'none'), 1600);
+        }
+
+        function rotateEndpoint() {
+          endpointIndex = (endpointIndex + 1) % endpoints.length;
+          endpointSpan.textContent = endpoints[endpointIndex];
+        }
+
+        function setServerAddress(value) {
+          serverAddress = value || window.location.origin;
+          baseUrlInput.value = serverAddress;
+        }
+
+        // Copy handler
+        copyBtn.addEventListener('click', async function () {
+          try {
+            await navigator.clipboard.writeText(serverAddress);
+            const dict = t[lang] || t.zh;
+            showToast(dict.copied);
+          } catch (e) {
+            try {
+              const ta = document.createElement('textarea');
+              ta.value = serverAddress;
+              ta.setAttribute('readonly', '');
+              ta.style.position = 'fixed';
+              ta.style.left = '-9999px';
+              ta.style.top = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              document.body.removeChild(ta);
+              const dict = t[lang] || t.zh;
+              showToast(dict.copied);
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        });
+
+        // Notice modal
+        function openNoticeModal(html) {
+          noticeContent.innerHTML = html || '';
+          noticeModal.style.display = 'flex';
+        }
+        function closeNotice(saveToday) {
+          if (saveToday) {
+            localStorage.setItem('notice_close_date', new Date().toDateString());
+          }
+          noticeModal.style.display = 'none';
+        }
+        closeTodayBtn.addEventListener('click', () => closeNotice(true));
+        closeNoticeBtn.addEventListener('click', () => closeNotice(false));
+
+        function initNotice() {
+          try {
+            const lastCloseDate = localStorage.getItem('notice_close_date');
+            const today = new Date().toDateString();
+            if (lastCloseDate === today) return;
+            fetch('/api/notice', { cache: 'no-store' })
+              .then((r) => r.json())
+              .then((res) => {
+                if (res && res.success && res.data && String(res.data).trim() !== '') {
+                  const html = (window.marked ? window.marked.parse(res.data) : res.data);
+                  openNoticeModal(html);
+                }
+              })
+              .catch(() => {});
+          } catch (e) {}
+        }
+
+        function initStatus() {
+          fetch('/api/status', { cache: 'no-store' })
+            .then((r) => r.json())
+            .then((res) => {
+              if (res && res.success) {
+                const data = res.data || {};
+                const addr = data.server_address || window.location.origin;
+                setServerAddress(addr);
+                // buttons
+                if (data.demo_site_enabled && data.version) {
+                  githubBtn.classList.remove('hidden');
+                  githubBtn.textContent = data.version;
+                  githubBtn.href = 'https://github.com/QuantumNous/new-api';
+                } else if (data.docs_link) {
+                  docBtn.classList.remove('hidden');
+                  docBtn.href = data.docs_link;
+                }
+              } else {
+                setServerAddress(window.location.origin);
+              }
+            })
+            .catch(() => setServerAddress(window.location.origin));
+        }
+
+        // Messages from parent (theme, lang, serverAddress)
+        window.addEventListener('message', (event) => {
+          const data = event.data || {};
+          if (data.themeMode) {
+            themeMode = data.themeMode;
+            applyTheme(themeMode);
+          }
+          if (data.lang) {
+            lang = (String(data.lang).startsWith('zh') ? 'zh' : 'en');
+            i18nRender();
+          }
+          if (data.serverAddress) {
+            setServerAddress(data.serverAddress);
+          }
+        });
+
+        // Init
+        applyTheme(themeMode);
+        i18nRender();
+        setServerAddress(window.location.origin);
+        initStatus();
+        initNotice();
+        endpointSpan.textContent = endpoints[0];
+        setInterval(rotateEndpoint, 3000);
+      })();
+    </script>
+  </body>
+</html>
